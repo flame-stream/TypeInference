@@ -1,4 +1,6 @@
 import org.scalatest._
+import scala.reflect.runtime.universe._
+import scala.tools.reflect.ToolBox
 
 trait Age extends Attr                 // named stream attribute
 trait AgeGreaterThan18 extends Age     // sequence of modifications
@@ -64,8 +66,8 @@ class SqlExampleTest extends FlatSpec with Matchers {
           ageFilter[Id](src2)),
         src3))
 
-    dst1 shouldBe a [Dst]
-    dst2 shouldBe a [Dst]
-    dst3 shouldBe a [Dst]
+    CheckUtil.assertType[Dst](dst1)
+    CheckUtil.assertType[Dst](dst2)
+    CheckUtil.assertType[Dst](dst3)
   }
 }

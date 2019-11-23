@@ -37,8 +37,8 @@ class JavaStreamsExampleTest extends FlatSpec with Matchers {
     val dst2 = xMap[Empty](xProjection[Y, XGreaterThan2](xFilter[Y](src)))
     val dst3 = xMap[Empty](xFilter[Empty](xProjection[Y, X](src)))
 
-    dst1 shouldBe a [Dst]
-    dst2 shouldBe a [Dst]
-    dst3 shouldBe a [Dst]
+    CheckUtil.assertType[Dst](dst1)
+    CheckUtil.assertType[Dst](dst2)
+    CheckUtil.assertType[Dst](dst3)
   }
 }
