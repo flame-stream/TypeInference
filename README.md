@@ -81,7 +81,7 @@ The common type `{ val x: XGreaterThan0Squared }` of the statements raises a que
 
 ## Type inhabitation
 
-There are [libraries](https://github.com/Chymyst/curryhoward) that generate a function body by provided type via Curry-Howard isomorphism, e.g.:
+There are [libraries](https://github.com/Chymyst/curryhoward) that generate a function body by provided type via Curry-Howard isomorphism and intuitionistic propositional logic teorem prover, e.g.:
 
 ```scala
 scala> import io.chymyst.ch.anyOfType
@@ -90,7 +90,7 @@ import io.chymyst.ch.anyOfType
 scala> def graphs[A, B, C, D, E] = anyOfType[A => (A => B) => (B => (C, D)) => (C, B)]()
 graphs: [A, B, C, D, E]=> Seq[io.chymyst.ch.Function1Lambda[A,(A => B) => ((B => (C, D)) => (C, B))]]
 ```
-Unfortunately, it
+
 
 ## Type equivalence in Functional style pipelines
 
