@@ -55,9 +55,9 @@ def project[XProp <: X]: { val x: XProp } => { val x: XProp } = ???
 def src: Src = ???
 ```
 
-The operations above could be defined simplier and still allow `project(map(filter(src)))` to compile. However, with polymorphic signatures we have here, we allow `map(project(filter(src)))` and `map(filter(project(src)))` to compile as well. Moreover, the types of the three expressions are all equivalent to `{ val x: XGreaterThan0Squared }` (see [below](#type-equivalence-in-functional-style-pipelines)).
+The operations above could be defined simplier and still allow `project(map(filter(src)))` to compile. However, with polymorphic signatures we have here, we allow `map(project(filter(src)))` and `map(filter(project(src)))` to compile as well. Moreover, the types of the three expressions are all equivalent to `{ val x: XGreaterThan0Squared }` (see [below](#type-equivalence-in-functional-style-pipelines)). 
 
-Note that we use two different rules of subtyping in this example:
+Two rules of subtyping allow the operation rearranging in this example:
 * Covariance to express states of data that are neccessary consecutive
   ```scala
   implicitly[{val x: XGreaterThan0; val y: Y} <:< {val x: X; val y: Y}]
@@ -74,8 +74,23 @@ Note that we use two different rules of subtyping in this example:
   type both = x with y
   implicitly[{val x: X; val y: Y} =:= both]  
   ```
-  
-  It is a suggestion that similarly organized operation signatures can express all possible execution graphs for a general arbitrary case. 
+
+It is a suggestion that similarly organized operation signatures can express all possible execution graphs for in an arbitrary case. 
+
+The common type `{ val x: XGreaterThan0Squared }` of the statements raises a question of exhaustiveness of our examples. If there can be found all combinations of given operations and data sources that typecheck to a certain type, this would be equivalent to generation of all possible graphs that produce the desired resource.   
+
+## Type inhabitation
+
+There are [libraries](https://github.com/Chymyst/curryhoward) that generate a function body by provided type via Curry-Howard isomorphism, e.g.:
+
+```scala
+scala> import io.chymyst.ch.anyOfType
+import io.chymyst.ch.anyOfType
+
+scala> def graphs[A, B, C, D, E] = anyOfType[A => (A => B) => (B => (C, D)) => (C, B)]()
+graphs: [A, B, C, D, E]=> Seq[io.chymyst.ch.Function1Lambda[A,(A => B) => ((B => (C, D)) => (C, B))]]
+```
+Unfortunately, it
 
 ## Type equivalence in Functional style pipelines
 
