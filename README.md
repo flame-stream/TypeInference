@@ -26,7 +26,7 @@ Express graphs produced by SQL and Java Streams (or any other functional pipelin
 
 An attempt to typecheck functional pipelines and SQL with use of Scala's structural subtyping and paramentric polymorphism to simulate row polymorphism. See a brief [explanation](https://brianmckenna.org/blog/row_polymorphism_isnt_subtyping) of structural subtyping and row polymorphism in comparison.
 
-### Functional style pipelines 
+## Functional style pipelines 
 
 Let's say we want to type the pipeline:
 
@@ -90,7 +90,58 @@ import io.chymyst.ch.anyOfType
 scala> def graphs[A, B, C, D, E] = anyOfType[A => (A => B) => (B => (C, D)) => (C, B)]()
 graphs: [A, B, C, D, E]=> Seq[io.chymyst.ch.Function1Lambda[A,(A => B) => ((B => (C, D)) => (C, B))]]
 ```
+This could be helpful if row polymorphism or subtyping and polymorphic types were supported.
 
+## Describing SQL
+
+An example of how join operations can be rearranged:
+
+```scala
+  // select count(*)
+  // from ownership
+  //  join pets on ownership.petId == pets.id
+  //  join people on ownership.ownerId == people.id
+  // where people.age < pets.age
+
+  trait petId
+  trait ownerId
+  trait petAge
+  trait ownerAge
+
+  trait petAgeFiltered extends petAge
+  trait ownerAgeFiltered extends ownerAge
+
+  trait count
+
+  type ownership = {val pId: petId; val o: ownerId}
+  type pets = {val pId: petId; val pAge: petAge}
+  type people = {val oId: ownerId; val oAge: ownerAge}
+
+  def src1: ownership = ???
+  def src2: pets = ???
+  def src3: people = ???
+
+  def join[S1, S2]: S1 => S2 => S1 with S2 = ???
+
+  def where[S <: { val pAge: petAge; val oAge: ownerAge }]
+    : S => S {val pAge: petAgeFiltered; val oAge: ownerAgeFiltered } = ???
+
+  def select[S <: { val oAge: ownerAge; val oId: ownerId; val pId: petId; val pAge: petAgeFiltered }]
+    : S => count = ???
+  ```
+  
+  ```scala
+  val tree1 = reify { select(where(join(join(src1)(src2))(src3))) }.tree      // compiles
+  val tree2 = reify { select(where(join(src1)(join(src2)(src3)))) }.tree      // compiles
+  val tree3 = reify { select(join(join(where(src1))(src2))(src3)) }.tree      // won't compile!!
+  ```
+
+## Summary of questions yet to answer
+* Solvability of the inhabitation problem for types that describe functional pipelines and SQL
+  * Is there any hope for automatic graph generation from row types?   
+* Descriptiveness of the proposed type system at least for SQL 
+  * Row types look good enough at a first glance...
+* Any other approaches to schematization?
 
 ## Type equivalence in Functional style pipelines
 
@@ -136,4 +187,4 @@ res4: =:=[tGt0{val x: XGreaterThan0Squared},AnyRef{val x: XGreaterThan0Squared}]
 res5: =:=[AnyRef{val x: XGreaterThan0Squared},AnyRef{val x: XGreaterThan0Squared}] = <function1>
 ```
 
-## TODO
+
