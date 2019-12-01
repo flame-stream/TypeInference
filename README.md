@@ -15,7 +15,7 @@ Our goal is to design unified type-level descriptions for heterogeneous executio
 
 ## Motivation
 * Schematization makes intents clearer, resulting in better maintainance and testing 
-* In particular, type system makes specification more strict by allowing user-defined types (data specifications). For example, operation's signature may tell about an applied change to the argument's sign or persistance of the argument's distribution
+* In particular, type system makes specification more expressive by allowing user-defined types (data specifications). For example, operation's signature may tell about an applied change to the argument's sign or persistance of the argument's distribution
 * Transparent prerequisites of obtaining a desired data resource enable automatic graph construction?
 
 ## Subtask
