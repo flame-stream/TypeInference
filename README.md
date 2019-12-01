@@ -142,6 +142,7 @@ An example of how join operations can be rearranged:
 * Descriptiveness of the proposed type system at least for SQL 
   * Row types look good enough at a first glance...
 * Any other approaches to schematization?
+  * Try path-dependent instead of records?
 
 ## Type equivalence in Functional style pipelines
 
