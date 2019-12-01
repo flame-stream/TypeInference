@@ -10,7 +10,7 @@ Our goal is to design unified type-level descriptions for heterogeneous executio
 * *Unified* descriptions as opposed to *heterogeneous* graphs suggest a way of maintaining system-wide invariants in an execution graph independently of underlying frameworks used in graph's operations.
 
 <p align="center">
-  <img src="https://lh3.googleusercontent.com/wXNudDqwx_imCC-C1kir0bNjuSmdGhc7EDaGq45XguJX5bBg8csfHVZOrSqpEj55fUtq5d_yqay452AualMt7nUGpYmUD1-opblcT8O2shloWziq_OwUxM_yyDMc6x6Gg-73Tljxcmfgm1RDSNS9Yfq_6odWlQ-apt-LudTAaaI3B8pV8lbw1CCzgv3zNN02J3_9s18Vy1F2mg3eHco7RgNTXb9Oiob7xlGhBZ3CvDSvtnqcTbQ9AapACOAfv76RUGEq9VPX5t9ultVZwfAVsx6QNEfc8BTszxB_hCJV9I-jGso47Q91l4bok1c6dUJnhl65mQdFQ8gAYqxg8_aqzJVC2z-oD-vfHg3xxxLRT7k18H4Xaz0G_t0qHWJ9M13ox6ZOxIMlWPZs077L7at8NQPZLUNtuvzw9HJWxQaZXt4wA_PYLSzGCD7CHR1rIwr6GZdH3HasFFSK1D1Fx2NmXT-3FXhn_kdqfAwHlI30g49gidL240Fj8LeLjG0Ev-w2moBhRuA64R3StrRKf1QgqqRBcdrKS5RYZRDa-6WL3xPvDEy33oM9ZXNVckxtFhTkFpGv-ceYVa3ceptqpUOahA2DlkMaANooL1dwsxLl9ZpeYcP8xfTi0laa8vQWGdyYuja7tNX29cvuiBb_7pTQWRV0u2Ma33UClZH56vD2DnsDqYoirWj44Eo=w482-h192-no">
+  <img src="https://sun9-33.userapi.com/c858124/v858124352/10e687/H5HP_JjePys.jpg">
 </p>
 
 ## Motivation
