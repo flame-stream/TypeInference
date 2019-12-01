@@ -5,12 +5,6 @@ trait Operation {
   //  type Dst
 }
 
-trait Type
-
-trait Exact[T] extends Type
-
-trait AtLeast[T] extends Exact[T]
-
 class Transition[A <: Attr, B <: A] extends Operation {
   //  type Src = AtLeast[A]
   //  type Dst = AtLeast[B]

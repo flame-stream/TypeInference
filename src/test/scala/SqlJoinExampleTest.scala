@@ -1,15 +1,15 @@
 import org.scalatest._
-import scala.reflect.runtime.universe._
+import scala.reflect.runtime.universe.{reify, runtimeMirror}
 import scala.tools.reflect.ToolBox
 
-trait Age extends Attr                 // named stream attribute
-trait AgeGreaterThan18 extends Age     // sequence of modifications
+object SqlJoinExampleTest {
+  trait Age extends Attr                 // named stream attribute
+  trait AgeGreaterThan18 extends Age     // sequence of modifications
 
-trait Name extends Attr                // named stream attribute
-trait Surname extends Attr             // named stream attribute
-trait Id extends Attr                  // named stream attribute
+  trait Name extends Attr                // named stream attribute
+  trait Surname extends Attr             // named stream attribute
+  trait Id extends Attr                  // named stream attribute
 
-object SqlExampleTest {
   implicit val IAN: Id with Name with Age = new Id with Name with Age
   implicit val IANS: Id with Age with Name with Surname = new Id with Name with Surname with Age
   implicit val IAgt18NS: Id with AgeGreaterThan18 with Name with Surname = new Id with Name with Surname with AgeGreaterThan18
@@ -29,8 +29,8 @@ object SqlExampleTest {
   type Empty = Object
 }
 
-class SqlExampleTest extends FlatSpec with Matchers {
-  import SqlExampleTest._
+class SqlJoinExampleTest extends FlatSpec with Matchers {
+  import SqlJoinExampleTest._
 
   "Type assertions" should "stand" in {
 
