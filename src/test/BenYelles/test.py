@@ -18,6 +18,7 @@ if __name__ == '__main__':
     # print("-- id:", cntx["id"].inst_return_type('Int'))
     # print("-- id:", cntx["id"].inst_return_type('Float'))
     # print("-- k:", cntx["k"].inst_return_type('Float'))
+    # print("do k' and k match?:", BenYelles.do_types_match(cntx["k"], cntx["k'"]))
     inhbitants = BenYelles.recursive_search(cntx, type_to_inh)
     for inh in inhbitants:
         print(inh, "::", type_to_inh)
