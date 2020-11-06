@@ -9,12 +9,15 @@
 
 
 
+idb :: a -> B
 id :: a -> a
-xu :: b
-fi :: b -> a
-gi :: c -> b -> (a, b)
-fst :: (a, b) -> a
+--k :: a -> b -> a
+xu :: B
+fi :: B -> A
+gi :: C -> B -> (A, B)
+--fst :: (a, b) -> a
 --snd :: (a, b) -> b
-h1 :: b -> c
-h2 :: b -> c
-yu :: a
+h1 :: B -> C
+h2 :: B -> C
+yu :: C
+

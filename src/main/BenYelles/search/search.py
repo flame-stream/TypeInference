@@ -3,16 +3,16 @@ from typing import Optional
 import itertools
 
 
-def check_return_type(func_type: Type, return_type: Type) -> Optional[int]:
-    if not isinstance(func_type, Function):
-        if func_type == return_type and type(return_type) == type(func_type):
+def check_return_type(cur_type: Type, return_type: Type) -> Optional[int]:
+    if not isinstance(cur_type, Function):
+        if cur_type == return_type and type(return_type) == type(cur_type):
             return 0
         return None
 
-    if func_type == return_type:
+    if do_types_match(cur_type, return_type):
         return 0
 
-    curry_func = func_type.curry()
+    curry_func = cur_type.curry()
 
     depth = check_return_type(curry_func, return_type)
 
@@ -22,7 +22,7 @@ def check_return_type(func_type: Type, return_type: Type) -> Optional[int]:
     return 1 + depth
 
 
-def recursive_search(cntx: dict,
+def recursive_search(cntx: Context,
                      inh_type: Type,
                      visited={}) -> list:  # secretly is a dfs
 
@@ -31,8 +31,8 @@ def recursive_search(cntx: dict,
     terms = []
 
     visited[(cntx, inh_type)] = [".. " + str(inh_type) + " .."]
-
-    for (name, cntx_type) in cntx.items():
+    polluted_cntx = cntx.inst_return_types(inh_type)
+    for (name, cntx_type) in polluted_cntx.items():
 
         depth = check_return_type(cntx_type, inh_type)
 
@@ -59,6 +59,47 @@ def recursive_search(cntx: dict,
     return terms
 
 
-# def another_recursive_search(cntx: dict,
-#                              inh_type: Type):
-#
+def check_vars(var_cntx: frozendict,
+               inh_type: Type):
+    terms = []
+    for item in var_cntx:
+        (var_name, var_type) = item
+        if type(var_type) is PolType:
+            raise RuntimeError("variable can't be polyporphic")
+
+        if var_type == inh_type:
+            terms.append(var_name)
+
+    return terms
+
+
+def do_types_match(term1, term2):
+    if type(term1) is PolType or type(term2) is PolType:  # if one of them is polymorphic then they match
+        return True
+
+    if type(term1) != type(term2):  # if none of them are polymorphic and terms have different "types" the do not match
+        return False
+
+    if type(term1) is Type or type(term1) is Tuple:  # if terms are variables they must have same type
+        return term1 == term2
+
+    if type(term1) is Function:  # if they are functions check types of their arguments and their return types
+        if len(term1) != len(term2):
+            return False
+        for arg_type1, arg_type2 in zip(term1, term2):
+            if not do_types_match(arg_type1, arg_type2):
+                return False
+
+        return True
+
+    return False
+
+
+def check_functons(func_cntx: frozendict,
+                   inh_type: Type):
+    pass
+
+
+def another_recursive_search(cntx: frozendict,
+                             inh_type: Type):
+    pass

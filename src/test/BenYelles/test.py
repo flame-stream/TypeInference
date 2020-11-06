@@ -14,6 +14,10 @@ if __name__ == '__main__':
     print(cntx)
     print(inh)
     type_to_inh = list(inh.values())[0]
+    # print("inst return type:")
+    # print("-- id:", cntx["id"].inst_return_type('Int'))
+    # print("-- id:", cntx["id"].inst_return_type('Float'))
+    # print("-- k:", cntx["k"].inst_return_type('Float'))
     inhbitants = BenYelles.recursive_search(cntx, type_to_inh)
     for inh in inhbitants:
         print(inh, "::", type_to_inh)
