@@ -86,6 +86,18 @@ def do_types_match(term1, term2):
     if type(term1) is Function:  # if they are functions check types of their arguments and their return types
         if len(term1) != len(term2):
             return False
+
+        def check_sigs(term1, term2):
+            for idx, sub_term in enumerate(term1):
+                for dual_idx, dual_sub_term in enumerate(term1):
+                    if sub_term == dual_sub_term and term2[idx] != term2[dual_idx]:
+                        return False
+            return True
+
+        if not check_sigs(term1, term2):
+            return False
+
+        # here must be check that same types in term1 match same types in term2
         for arg_type1, arg_type2 in zip(term1, term2):
             if not do_types_match(arg_type1, arg_type2):
                 return False
