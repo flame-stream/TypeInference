@@ -1,6 +1,6 @@
 ## Ongoing notes
 
-This is may be not a Ben-Yelles algorithm. :) 
+This is may be not a Ben-Yelles algorithm. :) It looks([one](https://youtu.be/g42JGNkz4YU) [two](https://youtu.be/UUF67seAoxc) [rus]) like one though.
 
 But it works for simple types. It is, honestly speaking, just a dfs.
 
