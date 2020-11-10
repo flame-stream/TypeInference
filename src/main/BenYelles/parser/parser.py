@@ -3,22 +3,22 @@ from ..search.types import *
 
 haskell_sigs = r"""
         ?signature: func_name "::" ( arrowtype | type )
-        
+
         type_name: /[A-Z][A-Za-z0-9\'_]*/
         func_name: /[a-z][A-Za-z0-9\'_]*/
-        
+
         arrowtype: (type "->")+ type
         tuple: "(" ((type | arrowtype) ",")+ (type | arrowtype) ")"
-        
+
         type:  type_name | tuple | "(" arrowtype ")"
-        
+
         // %ignore "--" (/[^\n]*/)+ "\n"
-        
+
         %import common.WS
         %ignore WS
-        
-        
-        
+
+
+
         """
 
 haskell_pol_sigs = r"""
@@ -27,12 +27,14 @@ haskell_pol_sigs = r"""
         type_name: /[A-Z][A-Za-z0-9\'_]*/
         func_name: /[a-z][A-Za-z0-9\'_]*/
         pol_type_name: /[a-z][A-Za-z0-9\'_]*/
-        
+
         pol_type: pol_type_name
         arrowtype: (type "->")+ type
-        tuple: "(" ((type | arrowtype) ",")+ (type | arrowtype) ")"
+        // tuple: "(" ((type | arrowtype) ",")+ (type | arrowtype) ")"
 
-        type:  type_name | pol_type | tuple | "(" arrowtype ")"
+        // type:  type_name | pol_type | tuple | "(" arrowtype ")"
+
+        type:  type_name | pol_type | "(" arrowtype ")"
 
         // %ignore "--" (/[^\n]*/)+ "\n"
 
@@ -56,7 +58,7 @@ class TreeToContext(Transformer):
 
     def type_name(self, s):
         (s,) = s
-        return Type((str(s),))
+        return SimpleType((str(s),))
 
     def pol_type_name(self, s):
         (s,) = s
@@ -66,8 +68,8 @@ class TreeToContext(Transformer):
         (s,) = s
         return PolType((str(s),))
 
-    def tuple(self, types):
-        return Tuple(types)
+    # def tuple(self, types):
+    #     return Tuple(types)
 
     def arrowtype(self, types):
         return Function(types)
@@ -92,3 +94,4 @@ def hasell_sig_parser(stream):
         cntx = cntx.update(signature)
 
     return cntx
+

@@ -10,11 +10,12 @@
 
 
 idb :: a -> B
-id :: a -> a
+--id :: a -> a
 --k :: a -> b -> a
+--k' :: b -> a -> a
 xu :: B
 fi :: B -> A
-gi :: C -> B -> (A, B)
+--gi :: C -> B -> (A, B)
 --fst :: (a, b) -> a
 --snd :: (a, b) -> b
 h1 :: B -> C
