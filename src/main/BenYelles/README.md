@@ -52,19 +52,19 @@ There are: Context(it is ```G``` from above) and desired type ```t```.
 4. For each function for each argument ```inhabitate``` it's type.
 
 It looks simple until we realise that our context is infinite,
-because it is possible to construct infinite lambda with different types.
+because it is possible to construct infinite lambdas with different types.
 So in our algorithm we pretend that rule of ```(I->)``` does not exist.
 
 Than our context ```G``` is restricted to our initial context that we provide
 in the begging of the search.
 
-On this point we can't say this algorithm is solving inhabitation problem. 
+On this point we can't say this algorithm solves inhabitation problem. 
 It enumerates some terms of the given type, but some terms will never appear
 in our enumeration.
 
 #### Motivation
 It must be mentioned that if we will describe our execution graph in terms of  ```λ->``` 
-we will fix our graph and there will be no room for optimization. There are two ways to fight it. 
+we will *almost* fix our graph and there will be *almost* no room for optimization. There are two ways to fight it. 
 There are two systems that will provide some room: ```λ∩``` and ```λ2```. 
 
 The worst thing is that inhabitation problem is undecidable for ```λ2``` and decidable
