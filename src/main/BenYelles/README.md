@@ -106,6 +106,9 @@ Then let us define rank for types:
 ```
 
 If our system has only rank 2, then [there is](https://compsciclub.ru/courses/2017-autumn/6.331-type-inhabitation-problems/about/) ```EXPTIME```-hard inhabitation algorithm.
+##### Note: 
+There is a curious thing about this system. Basically this type system may be emulated
+ on any system with multiple inheritance. 
 
 
 ### Problems to solve:
