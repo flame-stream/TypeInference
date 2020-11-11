@@ -6,20 +6,35 @@ from abc import ABC, abstractmethod
 
 
 class Type(ABC, tuple):
+    """
+    abstract class for types.
+    Provides interface for checking the inhabitation relation of any two types
+    """
+
     @abstractmethod
     def is_inhabitant_of(self, tgt_type) -> bool:
         pass
 
 
 class VoidType(Type):
+    """
+    Void type with no inhabitants.
+    """
 
     def is_inhabitant_of(self, tgt_type) -> bool:
         return False
 
 
 class SimpleType(Type):
+    """
+    Types from simply typed lambda calculus.
+    """
 
     def is_inhabitant_of(self, tgt_type) -> bool:
+        """
+            Simple type is inhabitant of any polymorphic type
+            Simple type is inhabitant of any simple type with same name
+        """
         if type(tgt_type) is PolType:
             return True
 
@@ -41,8 +56,15 @@ class SimpleType(Type):
 
 
 class PolType(Type):
-    def is_inhabitant_of(self, tgt_type) -> bool:
-        return type(tgt_type) is PolType
+    """
+    Polymorphic type from System F.
+    """
+
+    def is_inhabitant_of(self, tgt_type: Type) -> bool:
+        """
+        Polymorphic type is inhabitant only of another polymorphic type
+        """
+        return isinstance(tgt_type, PolType)
 
     def __new__(cls, seq: Sized):
         if len(seq) != 1:
@@ -57,7 +79,16 @@ class PolType(Type):
 
 
 class Function(Type):
-    def is_inhabitant_of(self, tgt_type) -> bool:
+    """
+    Function type from System F.
+    """
+
+    def is_inhabitant_of(self, tgt_type: Type) -> bool:
+
+        """
+        Function is an inhabitant of any polymorphic type
+        Function is an inhabitant of function if their signatures "match"
+        """
 
         if isinstance(tgt_type, PolType):
             return True
@@ -65,6 +96,12 @@ class Function(Type):
         if not isinstance(tgt_type, Function):
             return False
 
+        """
+        The main problem here is situation when in self and in tgt type there are some
+        polymorphic types, some simple types and some function types. Each type of self must be
+        inhabitant of corresponding type in tgt type. Corresponding in terms of currying:
+            if first type of self is inhabitant of first in tgt_type, then curry and check again: 
+        """
         forced_type = []
         cur_tgt_type = copy(tgt_type)
         cur_cnd_type = copy(self)
@@ -85,6 +122,12 @@ class Function(Type):
 
         forced_type.append(cur_cnd_type)
 
+        """
+            If everything checks, than check that same polymorphic type in different places of signature
+            matches same types in corresponding signature:
+            
+        """
+
         for (idx1, one), (idx2, dual) in itertools.product(enumerate(tgt_type), enumerate(tgt_type)):
             if idx1 >= len(forced_type):
                 return False
@@ -103,6 +146,9 @@ class Function(Type):
         return super(Function, cls).__new__(cls, seq)
 
     def curry(self) -> Type:
+        """
+        Currying. It is possible to curry A -> B, but then the result will no longer be function.
+        """
         if len(self) > 2:
             curried: Function = self[1:]
             return Function(curried)
@@ -110,6 +156,11 @@ class Function(Type):
         return return_type
 
     def args_to_return(self, t: Type) -> List[int]:  # how many args to pass for it to return t
+        """
+        Function to check how many currying operations
+        need to be done with self, for it to return desired type "t".
+        Note that if "t" is polymorphic all curring operations are producing desired type "t".
+        """
         if isinstance(t, PolType):
             return list(range(1, len(self)))
 
@@ -128,6 +179,12 @@ class Function(Type):
         return []
 
     def force_return_type(self, return_type: Type):
+        """
+        If function is returning polymorphic type then change all its occurrences
+        in signature to desired type "return type".
+        If there are multiple ways to do it then return all of them.
+        It is relevant when it is desired for function to return polymorphic type
+        """
         arities = self.args_to_return(return_type)
         if len(arities) == 0:
             return []
@@ -163,6 +220,10 @@ class Function(Type):
 
 
 class Context(frozendict):
+    """
+    Structure that stores pairs of function name and corresponding signature
+    """
+
     def __str__(self):
         return "{" + ",\n".join([f"\'{key}\': {value}" for (key, value) in self.items()]) + "}"
 
@@ -185,6 +246,10 @@ class Context(frozendict):
         return frozendict(vars), frozendict(funcs)
 
     def force_return_types(self, t: Type):
+        """
+        for each function force the return type. If this operation is spawning new functions
+        then apply mangling and store them all.
+        """
         res = {}
         for item in self.items():
             (term_name, term_type) = item
@@ -198,6 +263,9 @@ class Context(frozendict):
         return frozendict(res)
 
     def filter_by_return_type(self, t: Type):
+        """
+        return a copy of the context with only those functions that return desired type "t"
+        """
         res_cntx = self.force_return_types(t)
         res = {}
         for item in res_cntx.items():
@@ -209,6 +277,9 @@ class Context(frozendict):
         return Context(res)
 
     def filter_by_type(self, t: Type):
+        """
+        return a copy of the context with only those variables that have desired type "t"
+        """
         if isinstance(t, PolType):
             return copy(self)
 

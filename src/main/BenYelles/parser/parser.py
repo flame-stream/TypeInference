@@ -1,6 +1,8 @@
 from lark import Lark, Transformer
 from ..search.types import *
 
+# this parser spec is for parsing haskell-like signatures without polymorphic types
+
 haskell_sigs = r"""
         ?signature: func_name "::" ( arrowtype | type )
 
@@ -20,6 +22,8 @@ haskell_sigs = r"""
 
 
         """
+
+# this parser spec is for parsing haskell-like signatures with polymorphic types
 
 haskell_pol_sigs = r"""
         ?signature: func_name "::" ( arrowtype | type )
@@ -47,6 +51,8 @@ haskell_pol_sigs = r"""
 
 
 class TreeToContext(Transformer):
+    """ see lark example in its documentation this thing is straight from there"""
+
     def signature(self, sig):
         return {
             str(sig[0]): sig[1]
@@ -80,12 +86,16 @@ class TreeToContext(Transformer):
 
 
 def hasell_sig_parser(stream):
-    haskell_signature_parser = Lark(haskell_pol_sigs, start='signature')
+    """
+    :param stream: steam probably from som *.hs file with signatures
+    :return: context object with function signatures wrapped with type classes from types.py
+    """
+    haskell_signature_parser = Lark(haskell_pol_sigs, start='signature')  # parser creating
     cntx = Context()
     for line in stream:
-        if "::" not in line:
+        if "::" not in line:  # weak checker for if there is signature in line
             continue
-        if line[:2] == "--":
+        if line[:2] == "--":  # yep this is for comments
             continue
 
         parsed_line = haskell_signature_parser.parse(line)
@@ -94,4 +104,3 @@ def hasell_sig_parser(stream):
         cntx = cntx.update(signature)
 
     return cntx
-
