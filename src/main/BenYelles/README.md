@@ -63,8 +63,8 @@ It enumerates some terms of the given type, but some terms will never appear
 in our enumeration.
 
 #### Motivation
-It must be mentioned that if we will describe our execution graph in terms of  ```λ->``` 
-we will *almost* fix our graph and there will be *almost* no room for optimization. There are two ways to fight it. 
+It must be mentioned that if we describe our execution graph in terms of  ```λ->``` 
+we *almost* fix our graph and there is *almost* no room for optimization. There are two ways to fight it. 
 There are two systems that will provide some room: ```λ∩``` and ```λ2```. 
 
 The worst thing is that inhabitation problem is undecidable for ```λ2``` and decidable
@@ -105,10 +105,16 @@ Then let us define rank for types:
     rank(a ∩ b) = max(1, rank(a), rank(b))
 ```
 
-If our system has only rank 2, then [there is](https://compsciclub.ru/courses/2017-autumn/6.331-type-inhabitation-problems/about/) ```EXPTIME```-hard inhabitation algorithm. 
+If our system has only rank 2, then [there is](https://compsciclub.ru/courses/2017-autumn/6.331-type-inhabitation-problems/about/) ```EXPTIME```-hard inhabitation algorithm.
 
 
+### Problems to solve:
 
+#### Filters:
+If there are two filters: ```f1 :: A -> B``` and ```f2 :: B -> C```, 
+how to design types ```A, B, C``` to make sure that all produced terms have 
+```f1 . f2``` or ```f2 . f1``` as part of them, but never ```f1``` or ```f2``` alone?  
+       
  
  
 
