@@ -121,6 +121,11 @@ how to design types ```A, B, C``` to make sure that all produced terms have
 One way to solve it is to give type annotations(liquid types) for our type system
  as [here](https://ucsd-progsys.github.io/liquidhaskell-blog/)
  
+There is one way to combine ihabitation of simple types and liquid types without too much suffering.
+At first, let our types be from ```λ->```, but we provide annotations for them. We search inhabitants that are
+with no consideration of annotations. Then we are to check each inhabitant with Liqued haskell compiler. 
+If annotations are satisfied then it is one of our picks. 
+ 
  
 ### See also:
 
