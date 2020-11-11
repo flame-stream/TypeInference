@@ -119,7 +119,15 @@ how to design types ```A, B, C``` to make sure that all produced terms have
 ```f1 . f2``` or ```f2 . f1``` as part of them, but never ```f1``` or ```f2``` alone?  
 
 One way to solve it is to give type annotations(liquid types) for our type system
- as [here](https://ucsd-progsys.github.io/liquidhaskell-blog/) 
+ as [here](https://ucsd-progsys.github.io/liquidhaskell-blog/)
+ 
+ 
+### See also:
+
+* [There are](https://github.com/Denzed/STLC-type-inhabitation) implementations of inhabitation algorithm for simple types.
+* Some [more info](https://gist.github.com/pchiusano/444de1f222f1ceb09596) about inhabitation in haskell
+
+  
        
  
  
