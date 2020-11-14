@@ -119,12 +119,25 @@ how to design types ```A, B, C``` to make sure that all produced terms have
 ```f1 . f2``` or ```f2 . f1``` as part of them, but never ```f1``` or ```f2``` alone?  
 
 One way to solve it is to give type annotations(liquid types) for our type system
- as [here](https://ucsd-progsys.github.io/liquidhaskell-blog/)
+ as [here](https://ucsd-progsys.github.io/liquidhaskell-blog/).
+ 
+##### Liquid Types
+
+Filters are applying some predicate to data, so if there was a way to fix some
+predicate on resulting desired type and check each term for satisfaction of this predicate
+we could use it to solve the problem above. 
  
 There is one way to combine ihabitation of simple types and liquid types without too much suffering.
 At first, let our types be from ```λ->```, but we provide annotations for them. We search inhabitants that are
 with no consideration of annotations. Then we are to check each inhabitant with Liqued haskell compiler. 
-If annotations are satisfied then it is one of our picks. 
+If annotations are satisfied then it is one of our picks.
+
+##### Type Traits 
+ 
+This idea with simple types and their annotations with predicates seems
+to be fruitful but there is no way to call same arrow on different types. This is shame, so it is useful to call some interface or type class into existence. The arrows will be specifying traits of the type which the are accepting as input. This type system will be simmilar to
+```λ∩```. There is algorithm that solves our inhabitation problem there,
+but only if there are no types with multiple traits. Which is also shame
  
  
 ### See also:
