@@ -9,16 +9,21 @@
 
 
 
-idb :: a -> B
---id :: a -> a
---k :: a -> b -> a
---k' :: b -> a -> a
-xu :: B
-fi :: B -> A
---gi :: C -> B -> (A, B)
---fst :: (a, b) -> a
---snd :: (a, b) -> b
-h1 :: B -> C
-h2 :: B -> C
-yu :: C
+--idb :: a -> B
+----id :: a -> a
+----k :: a -> b -> a
+----k' :: b -> a -> a
+--xu :: B
+--fi :: B -> A
+----gi :: C -> B -> (A, B)
+----fst :: (a, b) -> a
+----snd :: (a, b) -> b
+--h1 :: B -> C
+--h2 :: B -> C
+--yu :: C
+
+
+
+
+
 
