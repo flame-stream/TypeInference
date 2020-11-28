@@ -7,9 +7,9 @@
 --person_older_than_pet_proofer :: (Ownership, Pet) -> PersonOlderThanPetProof
 
 
-
-
---idb :: a -> B
+--D ::extends B
+--
+----idb :: a -> B
 ----id :: a -> a
 ----k :: a -> b -> a
 ----k' :: b -> a -> a
@@ -20,7 +20,19 @@
 ----snd :: (a, b) -> b
 --h1 :: B -> C
 --h2 :: B -> C
+--h3 :: A -> D
 --yu :: C
+--yii :: D
+
+filter1 :: Num -> Num
+filter2 :: Num -> Num
+
+source :: A
+A ::extends Num
+
+adapter :: Num -> C
+
+model :: C -> B
 
 
 
