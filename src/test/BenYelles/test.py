@@ -14,18 +14,18 @@ def remove_mangling(name):
 
 if __name__ == '__main__':
     with open("cntx.hs", 'r') as input_stream:
-        cntx = BenYelles.hasell_sig_parser(input_stream)
+        cntx, ext = BenYelles.hasell_sig_parser(input_stream)
 
     with open("inh.hs", 'r') as input_stream:
-        inh = BenYelles.hasell_sig_parser(input_stream)
+        inh, _ = BenYelles.hasell_sig_parser(input_stream)
 
     print(f"context: {cntx}")
     print(f"to inhabitate: {inh}")
     type_to_inh = list(inh.values())[0]
-    inhbitants_searcher = BenYelles.recursive_search(cntx, type_to_inh)
+    inhabitants_searcher = BenYelles.recursive_search(cntx, type_to_inh, ext)
     aggr = set()
     while input("continue? [y]"):
-        cur_aggr = next(inhbitants_searcher)
+        cur_aggr = next(inhabitants_searcher)
         cur_aggr = {remove_mangling(name) for name in cur_aggr}
         for inh in cur_aggr.difference(aggr):
             print(inh, "::", type_to_inh)
