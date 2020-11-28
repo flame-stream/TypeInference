@@ -2,7 +2,7 @@ from .types import *
 from typing import List, Dict, Set
 
 
-def recursive_search(cntx: Context, tgt_type: Type):
+def recursive_search(cntx: Context, tgt_type: Type, ext):
     """
     This function preforms lazy search through the possible terms
      for them to have desired type "tgt_type"
@@ -12,16 +12,16 @@ def recursive_search(cntx: Context, tgt_type: Type):
     """
 
     # cntx with only variables which have desired type
-    filtered_cntx = cntx.filter_by_return_type(tgt_type)
+    filtered_cntx = cntx.filter_by_return_type(tgt_type, ext)
     # accumulator to store terms with desired type
-    good_terms: Set[str] = set(cntx.filter_by_type(tgt_type).keys())
+    good_terms: Set[str] = set(cntx.filter_by_type(tgt_type, ext).keys())
     terms_to_inh: Dict[str, List] = {}
     inh_terms = {}
     """
     For each such function for each of its argument initialize same recursive search in lazy way.
     """
     for (term_name, term_type) in filtered_cntx.items():
-        terms_to_inh[term_name] = [recursive_search(cntx, tt) for tt in term_type[:-1]]
+        terms_to_inh[term_name] = [recursive_search(cntx, tt, ext) for tt in term_type[:-1]]
         inh_terms[term_name] = [set() for _ in terms_to_inh[term_name]]
 
     """

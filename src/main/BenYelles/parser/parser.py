@@ -26,7 +26,12 @@ haskell_sigs = r"""
 # this parser spec is for parsing haskell-like signatures with polymorphic types
 
 haskell_pol_sigs = r"""
-        ?signature: func_name "::" ( arrowtype | type )
+        start: extension | signature 
+        extension: type_name "::extends" type_name ("," type_name)*
+        
+        signature: func_name "::" ( arrowtype | type )
+        
+        
 
         type_name: /[A-Z][A-Za-z0-9\'_]*/
         func_name: /[a-z][A-Za-z0-9\'_]*/
@@ -41,6 +46,8 @@ haskell_pol_sigs = r"""
         type:  type_name | pol_type | "(" arrowtype ")"
 
         // %ignore "--" (/[^\n]*/)+ "\n"
+        
+        
 
         %import common.WS
         %ignore WS
@@ -52,6 +59,10 @@ haskell_pol_sigs = r"""
 
 class TreeToContext(Transformer):
     """ see lark example in its documentation this thing is straight from there"""
+
+    def start(self, whatever):
+        whatever, = whatever
+        return whatever
 
     def signature(self, sig):
         return {
@@ -82,7 +93,11 @@ class TreeToContext(Transformer):
 
     def type(self, typename):
         typename, = typename
+
         return typename
+
+    def extension(self, typenames):
+        return typenames[0], set(typenames[1:])
 
 
 def hasell_sig_parser(stream):
@@ -90,8 +105,10 @@ def hasell_sig_parser(stream):
     :param stream: steam probably from som *.hs file with signatures
     :return: context object with function signatures wrapped with type classes from types.py
     """
-    haskell_signature_parser = Lark(haskell_pol_sigs, start='signature')  # parser creating
+
+    haskell_signature_parser = Lark(haskell_pol_sigs, start='start')  # parser creating
     cntx = Context()
+    extensions = {}
     for line in stream:
         if "::" not in line:  # weak checker for if there is signature in line
             continue
@@ -100,7 +117,14 @@ def hasell_sig_parser(stream):
 
         parsed_line = haskell_signature_parser.parse(line)
         print(parsed_line.pretty())
-        signature = TreeToContext().transform(parsed_line)
-        cntx = cntx.update(signature)
+        token = TreeToContext().transform(parsed_line)
+        if isinstance(token, dict):
+            cntx = cntx.update(token)
+        if isinstance(token, tuple):
+            extending_type, extended_types = token
+            if extending_type in extensions:
+                extensions[extending_type].add(extended_types)
+            else:
+                extensions[extending_type] = extended_types
 
-    return cntx
+    return cntx, frozendict(extensions)

@@ -12,7 +12,7 @@ class Type(ABC, tuple):
     """
 
     @abstractmethod
-    def is_inhabitant_of(self, tgt_type) -> bool:
+    def is_inhabitant_of(self, tgt_type, *args, **kwargs) -> bool:
         pass
 
 
@@ -21,7 +21,7 @@ class VoidType(Type):
     Void type with no inhabitants.
     """
 
-    def is_inhabitant_of(self, tgt_type) -> bool:
+    def is_inhabitant_of(self, tgt_type, *args, **kwargs) -> bool:
         return False
 
 
@@ -30,7 +30,7 @@ class SimpleType(Type):
     Types from simply typed lambda calculus.
     """
 
-    def is_inhabitant_of(self, tgt_type) -> bool:
+    def is_inhabitant_of(self, tgt_type, *args, **kwargs) -> bool:
         """
             Simple type is inhabitant of any polymorphic type
             Simple type is inhabitant of any simple type with same name
@@ -41,7 +41,16 @@ class SimpleType(Type):
         if type(tgt_type) is not SimpleType:
             return False
 
-        return self == tgt_type
+        if self == tgt_type:
+            return True
+
+        if "extends" in kwargs and self in kwargs["extends"]:
+            ext = kwargs["extends"]
+            for extended_type in ext[self]:
+                if extended_type.is_inhabitant_of(tgt_type, extends=ext):
+                    return True
+
+        return False
 
     def __new__(cls, seq: Sized):
         if len(seq) != 1:
@@ -60,7 +69,7 @@ class PolType(Type):
     Polymorphic type from System F.
     """
 
-    def is_inhabitant_of(self, tgt_type: Type) -> bool:
+    def is_inhabitant_of(self, tgt_type: Type, *args, **kwargs) -> bool:
         """
         Polymorphic type is inhabitant only of another polymorphic type
         """
@@ -83,7 +92,7 @@ class Function(Type):
     Function type from System F.
     """
 
-    def is_inhabitant_of(self, tgt_type: Type) -> bool:
+    def is_inhabitant_of(self, tgt_type: Type, *args, **kwargs) -> bool:
 
         """
         Function is an inhabitant of any polymorphic type
@@ -155,7 +164,7 @@ class Function(Type):
         return_type: Union[Function, Tuple, SimpleType] = self[1]
         return return_type
 
-    def args_to_return(self, t: Type) -> List[int]:  # how many args to pass for it to return t
+    def args_to_return(self, t: Type, ext) -> List[int]:  # how many args to pass for it to return t
         """
         Function to check how many currying operations
         need to be done with self, for it to return desired type "t".
@@ -164,7 +173,7 @@ class Function(Type):
         if isinstance(t, PolType):
             return list(range(1, len(self)))
 
-        if self.is_inhabitant_of(t):
+        if self.is_inhabitant_of(t, extends=ext):
             return []
 
         curr_func = copy(self)
@@ -173,19 +182,19 @@ class Function(Type):
         while isinstance(curr_func, Function):
             curr_func = curr_func.curry()
             depth += 1
-            if curr_func.is_inhabitant_of(t):
+            if curr_func.is_inhabitant_of(t, extends=ext):
                 return [depth]
 
         return []
 
-    def force_return_type(self, return_type: Type):
+    def force_return_type(self, return_type: Type, ext):
         """
         If function is returning polymorphic type then change all its occurrences
         in signature to desired type "return type".
         If there are multiple ways to do it then return all of them.
         It is relevant when it is desired for function to return polymorphic type
         """
-        arities = self.args_to_return(return_type)
+        arities = self.args_to_return(return_type, ext)
         if len(arities) == 0:
             return []
         if len(self) == 2:
@@ -224,6 +233,9 @@ class Context(frozendict):
     Structure that stores pairs of function name and corresponding signature
     """
 
+    def __init__(self, *args, **kwargs):
+        super(Context, self).__init__(*args, **kwargs)
+
     def __str__(self):
         return "{" + ",\n".join([f"\'{key}\': {value}" for (key, value) in self.items()]) + "}"
 
@@ -245,7 +257,7 @@ class Context(frozendict):
 
         return frozendict(vars), frozendict(funcs)
 
-    def force_return_types(self, t: Type):
+    def force_return_types(self, t: Type, ext):
         """
         for each function force the return type. If this operation is spawning new functions
         then apply mangling and store them all.
@@ -254,7 +266,7 @@ class Context(frozendict):
         for item in self.items():
             (term_name, term_type) = item
             if isinstance(term_type, Function):
-                curried_funcs = term_type.force_return_type(t)
+                curried_funcs = term_type.force_return_type(t, ext)
                 for i, curried_func in enumerate(curried_funcs):
                     res[term_name + "__" + str(i) + "__"] = curried_func
             else:
@@ -262,21 +274,21 @@ class Context(frozendict):
 
         return frozendict(res)
 
-    def filter_by_return_type(self, t: Type):
+    def filter_by_return_type(self, t: Type, ext):
         """
         return a copy of the context with only those functions that return desired type "t"
         """
-        res_cntx = self.force_return_types(t)
+        res_cntx = self.force_return_types(t, ext)
         res = {}
         for item in res_cntx.items():
             (term_name, term_type) = item
             if isinstance(term_type, Function):
-                if term_type[-1].is_inhabitant_of(t):
+                if term_type[-1].is_inhabitant_of(t, extends=ext):
                     res[term_name] = term_type
 
         return Context(res)
 
-    def filter_by_type(self, t: Type):
+    def filter_by_type(self, t: Type, ext):
         """
         return a copy of the context with only those variables that have desired type "t"
         """
@@ -286,7 +298,7 @@ class Context(frozendict):
         res = {}
         for item in self.items():
             (term_name, term_type) = item
-            if term_type.is_inhabitant_of(t):
+            if term_type.is_inhabitant_of(t, extends=ext):
                 res[term_name] = term_type
 
         return Context(res)
